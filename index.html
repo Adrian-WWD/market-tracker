@@ -1,304 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PRKT/TERMINAL</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+<div class="app">
 
-<style>
-:root{--bg:#0d0d0d;--bg2:#141414;--bg3:#1a1a1a;--bg4:#222;--border:#2a2a2a;--border2:#333;--text:#e8e8e8;--text2:#888;--text3:#555;--green:#00c896;--green2:#00a87e;--red:#ff5b5b;--amber:#f5a623;--blue:#4a9eff;--purple:#a78bfa;--mono:'JetBrains Mono','Fira Mono','Courier New',monospace}
-.light{--bg:#f5f5f0;--bg2:#efefea;--bg3:#e8e8e2;--bg4:#ddddd7;--border:#d0d0c8;--border2:#bbbbb3;--text:#111;--text2:#666;--text3:#999;--green:#009966;--green2:#007a52;--red:#cc3333;--amber:#c47f00;--blue:#1a6abf;--purple:#6d4fb3}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--mono);background:var(--bg);color:var(--text);font-size:13px;transition:background .2s,color .2s}
-.terminal{min-height:600px}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--bg2)}
-.logo{font-size:14px;font-weight:700;letter-spacing:.05em;color:var(--text)}
-.logo span{color:var(--green)}
-.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:6px;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.topbar-right{display:flex;align-items:center;gap:12px;font-size:11px;color:var(--text2);letter-spacing:.05em}
-.theme-btn{background:none;border:1px solid var(--border2);color:var(--text2);font-family:var(--mono);font-size:11px;padding:3px 10px;border-radius:3px;cursor:pointer;letter-spacing:.05em;transition:all .15s}
-.theme-btn:hover{border-color:var(--green);color:var(--green)}
-.ticker{display:flex;gap:0;border-bottom:1px solid var(--border);background:var(--bg2);overflow:hidden}
-.tick-item{display:flex;align-items:center;gap:6px;padding:7px 16px;border-right:1px solid var(--border);font-size:11px;letter-spacing:.04em;white-space:nowrap;flex-shrink:0}
-.tick-name{color:var(--text2)}
-.tick-val{color:var(--text);font-weight:700}
-.tick-up{color:var(--green)}
-.tick-down{color:var(--red)}
-.nav{display:flex;gap:0;padding:0 16px;border-bottom:1px solid var(--border);background:var(--bg)}
-.nav-btn{background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);font-family:var(--mono);font-size:11px;padding:10px 16px;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;transition:all .15s}
-.nav-btn:hover{color:var(--text2)}
-.nav-btn.active{color:var(--green);border-bottom-color:var(--green)}
-.content{padding:16px}
-.filter-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
-.f-btn{background:none;border:1px solid var(--border2);color:var(--text3);font-family:var(--mono);font-size:10px;padding:4px 12px;border-radius:2px;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:all .15s}
-.f-btn:hover{border-color:var(--text3);color:var(--text2)}
-.f-btn.on{border-color:var(--green);color:var(--green)}
-.mcard{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:border-color .15s}
-.mcard:hover{border-color:var(--border2)}
-.mcard.selected{border-color:var(--green)}
-.mcard-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;gap:12px}
-.mcard-title{font-size:13px;color:var(--text);line-height:1.4;flex:1}
-.mcard-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
-.signal-btn{font-family:var(--mono);font-size:11px;font-weight:700;padding:3px 10px;border-radius:2px;border:none;cursor:pointer;letter-spacing:.06em}
-.sig-buy{background:var(--green);color:#000}
-.sig-watch{background:var(--amber);color:#000}
-.sig-pass{background:#444;color:var(--text2)}
-.sig-pass.light-mode{background:var(--bg4);color:var(--text2)}
-.plat-badge{font-size:10px;padding:3px 8px;border-radius:2px;letter-spacing:.05em;font-weight:700}
-.plat-k{background:#1a2a1a;color:var(--green)}
-.light .plat-k{background:#d0eed8;color:var(--green2)}
-.plat-p{background:#1e1a2e;color:var(--purple)}
-.light .plat-p{background:#e8e0ff;color:#6d4fb3}
-.odds-row{display:flex;align-items:center;gap:12px;margin-bottom:8px}
-.odds-stat{min-width:38px}
-.odds-label{font-size:10px;color:var(--text3);letter-spacing:.04em;text-transform:uppercase}
-.odds-val{font-size:15px;font-weight:700}
-.yes-val{color:var(--green)}
-.no-val{color:var(--red)}
-.trend-val{color:var(--text2)}
-.trend-up{color:var(--green)}
-.trend-dn{color:var(--red)}
-.bar-wrap{flex:1;height:4px;background:var(--bg4);border-radius:0;overflow:hidden}
-.bar-fill{height:100%;background:var(--green);transition:width .4s}
-.mcard-foot{display:flex;align-items:center;justify-content:space-between;font-size:10px;color:var(--text3);letter-spacing:.04em}
-.exp-date{font-family:var(--mono)}
-.arb-tag{color:var(--amber);border:1px solid var(--amber);padding:1px 6px;border-radius:2px;font-size:10px;letter-spacing:.04em}
-.signal-panel{background:var(--bg2);border:1px solid var(--green);border-radius:4px;padding:16px;margin-top:12px}
-.signal-header{font-size:10px;color:var(--green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.signal-header::before{content:'▶';font-size:9px}
-.signal-title{font-size:14px;color:var(--text);margin-bottom:14px;line-height:1.4}
-.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.stat-box{background:var(--bg3);border:1px solid var(--border);border-radius:3px;padding:10px 12px}
-.stat-label{font-size:10px;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
-.stat-val{font-size:16px;font-weight:700;color:var(--text)}
-.stat-val.green{color:var(--green)}
-.stat-val.red{color:var(--red)}
-.stat-val.amber{color:var(--amber)}
-.ai-box{background:var(--bg3);border-left:3px solid var(--green);padding:12px 14px;border-radius:0 3px 3px 0}
-.ai-label{font-size:10px;color:var(--green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px}
-.ai-text{font-size:12px;color:var(--text2);line-height:1.7}
-.spinner{display:inline-block;width:12px;height:12px;border:1.5px solid var(--border2);border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px;margin-right:6px}
-@keyframes spin{to{transform:rotate(360deg)}}
-.panel-hidden{display:none}
-</style>
-
-<div class="terminal" id="root">
-  <div class="topbar">
-    <div class="logo"><span>PRKT</span>/TERMINAL <span style="font-size:11px;color:var(--text3);font-weight:400">v2.0</span></div>
-    <div class="topbar-right">
-      <span><span class="live-dot"></span>LIVE · KALSHI + POLYMARKET</span>
-      <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">[ LIGHT ]</button>
-    </div>
-  </div>
-  <div class="ticker" id="ticker"></div>
-  <div class="nav">
-    <button class="nav-btn active" onclick="switchNav(this,'markets')">Markets</button>
-    <button class="nav-btn" onclick="switchNav(this,'advisor')">AI Advisor</button>
-    <button class="nav-btn" onclick="switchNav(this,'watchlist')">Watchlist</button>
-  </div>
-
-  <div class="content" id="pane-markets">
-    <div class="filter-row">
-      <button class="f-btn on" onclick="setFilter(this,'all')">All</button>
-      <button class="f-btn" onclick="setFilter(this,'politics')">Politics</button>
-      <button class="f-btn" onclick="setFilter(this,'economics')">Economics</button>
-      <button class="f-btn" onclick="setFilter(this,'news')">Current events</button>
-      <button class="f-btn" onclick="setFilter(this,'arb')">⇄ Arb only</button>
-    </div>
-    <div id="market-list"></div>
-    <div class="signal-panel panel-hidden" id="signal-panel">
-      <div class="signal-header">Signal analysis</div>
-      <div class="signal-title" id="sig-title"></div>
-      <div class="stat-grid" id="sig-stats"></div>
-      <div class="ai-box"><div class="ai-label">AI Reasoning</div><div class="ai-text" id="sig-ai"></div></div>
+  <div class="hdr">
+    <div class="logo">PRKT<span>/</span>TERMINAL <span class="ver">v3.0</span></div>
+    <div class="hdr-right">
+      <div class="live-dot" id="live-dot"></div>
+      <div class="lbl" id="live-lbl">CONNECTING...</div>
+      <button class="theme-btn" id="theme-btn" onclick="toggleTheme()">LIGHT</button>
     </div>
   </div>
 
-  <div class="content panel-hidden" id="pane-advisor">
-    <div class="signal-panel" style="border-color:var(--blue)">
-      <div class="signal-header" style="color:var(--blue)">AI Trade Advisor</div>
-      <div style="display:flex;gap:8px;margin-bottom:12px">
-        <input id="ask-input" type="text" placeholder="Ask about any market..." style="flex:1;background:var(--bg3);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:12px;padding:7px 10px;border-radius:3px;outline:none" onkeydown="if(event.key==='Enter')askAdvisor()">
-        <button onclick="askAdvisor()" style="background:none;border:1px solid var(--blue);color:var(--blue);font-family:var(--mono);font-size:11px;padding:7px 14px;border-radius:3px;cursor:pointer;letter-spacing:.05em">RUN →</button>
+  <div class="ticker-bar">
+    <div class="ticker-inner" id="ticker">Loading live data...</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="goTab('markets')">MARKETS</button>
+    <button class="tab" onclick="goTab('advisor')">AI ADVISOR</button>
+    <button class="tab" onclick="goTab('portfolio')">PORTFOLIO</button>
+    <button class="tab" onclick="goTab('alerts')">ALERTS <span class="badge" id="alert-badge" style="display:none">0</span></button>
+    <button class="tab" onclick="goTab('settings')">SETTINGS</button>
+  </div>
+
+  <!-- MARKETS -->
+  <div id="tab-markets" class="panel active">
+    <div class="row" id="cat-filters"></div>
+    <div id="mlist"><div class="loading-state">Fetching live market data...</div></div>
+    <div class="dpanel" id="dpanel">
+      <div class="dhdr">▶ SIGNAL ANALYSIS</div>
+      <div class="dtitle" id="d-title"></div>
+      <div class="sgrid" id="d-stats"></div>
+      <div class="rblock">
+        <div class="rlbl">AI REASONING</div>
+        <div class="rtxt" id="d-reason">Select a market then click ANALYZE for AI reasoning.</div>
       </div>
-      <div id="advisor-out" style="font-size:12px;color:var(--text2);line-height:1.7;min-height:48px"></div>
-    </div>
-    <div style="margin-top:12px">
-      <div style="font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">Top signals right now</div>
-      <div id="advisor-recs"></div>
+      <div class="arow">
+        <button class="btn btn-p" id="d-cta" onclick="ctaAction()"></button>
+        <button class="btn btn-g" onclick="addWatch()">+ WATCHLIST</button>
+        <button class="btn btn-g" onclick="openAlertModal()">🔔 ALERT</button>
+        <button class="btn btn-g" onclick="analyzeMarket()">ANALYZE ↗</button>
+        <button class="btn btn-g" onclick="closeDetail()">CLOSE</button>
+      </div>
     </div>
   </div>
 
-  <div class="content panel-hidden" id="pane-watchlist">
-    <div id="watchlist-body"></div>
+  <!-- AI ADVISOR -->
+  <div id="tab-advisor" class="panel">
+    <div class="abox">
+      <div class="sec" style="margin-top:0">Ask the AI advisor</div>
+      <div class="prompt-row">
+        <input class="inp" id="ai-inp" placeholder="e.g. 'What's the best value bet right now?'">
+        <button class="btn btn-p" onclick="runAI()">ASK ↗</button>
+      </div>
+      <div class="aout" id="ai-out">Waiting for your question...</div>
+    </div>
+    <div class="sec">Quick prompts</div>
+    <div class="row" style="flex-wrap:wrap">
+      <button class="chip" onclick="qp('Best value bets today across politics and economics')">Best value today</button>
+      <button class="chip" onclick="qp('Which markets have the most momentum right now?')">Trending</button>
+      <button class="chip" onclick="qp('Are there any mispriced markets vs real-world probability?')">Mispriced odds</button>
+      <button class="chip" onclick="qp('Which markets are resolving in the next 7 days and worth trading?')">Resolving soon</button>
+      <button class="chip" onclick="qp('What should I buy for a quick flip vs a long hold?')">Flip vs hold</button>
+      <button class="chip" onclick="qp('Are there any arbitrage opportunities between Kalshi and Polymarket?')">Arb opps</button>
+    </div>
   </div>
-</div>
 
-<script>
-const MARKETS=[
-  {id:1,title:'Will the Fed cut rates at the June 2025 FOMC meeting?',platform:'Kalshi',cat:'economics',yes:38,no:62,trend:6,expires:'JUN 18',signal:'buy',arb:false},
-  {id:2,title:'Who wins the 2026 FIFA World Cup?',platform:'Polymarket',cat:'news',yes:22,no:78,trend:2,expires:'JUL 19 2026',signal:'watch',arb:false},
-  {id:3,title:'Will Trump issue a pardon for Ross Ulbricht by July 2025?',platform:'Kalshi',cat:'politics',yes:61,no:39,trend:14,expires:'JUL 1',signal:'watch',arb:false},
-  {id:4,title:'Will any US state legalize recreational cannabis in 2025?',platform:'Polymarket',cat:'politics',yes:29,no:71,trend:-3,expires:'DEC 31',signal:'buy',arb:false},
-  {id:5,title:'Will the Lakers make the 2025 NBA Playoffs?',platform:'Kalshi',cat:'news',yes:78,no:22,trend:1,expires:'APR 12',signal:'pass',arb:false},
-  {id:6,title:'Will a major US newspaper endorse a third-party candidate in 2026 midterms?',platform:'Polymarket',cat:'politics',yes:12,no:88,trend:0,expires:'NOV 3 2026',signal:'watch',arb:false},
-  {id:7,title:'Will the S&P 500 end 2025 above 6000?',platform:'Kalshi',cat:'economics',yes:68,no:32,trend:4,expires:'DEC 31',signal:'buy',arb:true},
-  {id:7,title:'Will the S&P 500 end 2025 above 6000?',platform:'Polymarket',cat:'economics',yes:71,no:29,trend:5,expires:'DEC 31',signal:'buy',arb:true},
-];
+  <!-- PORTFOLIO -->
+  <div id="tab-portfolio" class="panel">
+    <div class="sec" style="margin-top:0">Add position</div>
+    <div class="add-form">
+      <div class="form-grid">
+        <div><div class="set-lbl" style="margin-bottom:4px">Market</div><input class="inp" id="pos-mkt" placeholder="Market name..."></div>
+        <div><div class="set-lbl" style="margin-bottom:4px">Side</div>
+          <select class="inp" id="pos-side"><option value="YES">YES</option><option value="NO">NO</option></select></div>
+        <div><div class="set-lbl" style="margin-bottom:4px">Avg price (¢)</div><input class="inp" id="pos-price" type="number" placeholder="45"></div>
+        <div><div class="set-lbl" style="margin-bottom:4px">Shares</div><input class="inp" id="pos-shares" type="number" placeholder="100"></div>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:7px;">
+        <select class="inp" id="pos-source" style="max-width:140px">
+          <option value="polymarket">Polymarket</option>
+          <option value="kalshi">Kalshi</option>
+        </select>
+        <button class="btn btn-p" onclick="addPos()" style="flex:1">+ ADD POSITION</button>
+      </div>
+    </div>
+    <div class="sec">Portfolio summary</div>
+    <div class="pgrid">
+      <div class="pstat"><div class="mlbl">TOTAL INVESTED</div><div class="mval neu" id="port-invested">$0.00</div></div>
+      <div class="pstat"><div class="mlbl">CURRENT VALUE</div><div class="mval neu" id="port-value">$0.00</div></div>
+      <div class="pstat"><div class="mlbl">UNREALIZED P&amp;L</div><div class="mval neu" id="port-pnl">$0.00</div></div>
+      <div class="pstat"><div class="mlbl">POSITIONS</div><div class="mval neu" id="port-count">0</div></div>
+    </div>
+    <div class="sec">Positions</div>
+    <div id="pos-list"><div class="empty">No positions yet.<br>Add a position above to track P&amp;L.</div></div>
+  </div>
 
-const WATCHLIST=[1,3,7];
-let filter='all', darkMode=true, selectedId=null;
+  <!-- ALERTS -->
+  <div id="tab-alerts" class="panel">
+    <div class="sec" style="margin-top:0">Set price alert</div>
+    <div class="add-form">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:7px;">
+        <div><div class="set-lbl" style="margin-bottom:4px">Market</div><input class="inp" id="al-mkt" placeholder="Market name..."></div>
+        <div><div class="set-lbl" style="margin-bottom:4px">Condition</div>
+          <select class="inp" id="al-cond"><option value="above">YES price above</option><option value="below">YES price below</option></select></div>
+        <div><div class="set-lbl" style="margin-bottom:4px">Threshold (¢)</div><input class="inp" id="al-thresh" type="number" placeholder="65"></div>
+      </div>
+      <button class="btn btn-p" style="width:100%" onclick="addAlert()">+ SET ALERT</button>
+    </div>
+    <div class="sec">Active alerts</div>
+    <div id="alert-list"><div class="empty">No alerts set yet.</div></div>
+  </div>
 
-function toggleTheme(){
-  darkMode=!darkMode;
-  document.getElementById('root').classList.toggle('light',!darkMode);
-  document.getElementById('theme-btn').textContent=darkMode?'[ LIGHT ]':'[ DARK ]';
-}
-
-function renderTicker(){
-  const items=[
-    {n:'FED CUT JUN',v:'38¢',d:true},{n:'TRUMP PARDON',v:'61¢',d:true},
-    {n:'LAKERS PLAYOFFS',v:'78¢',d:true},{n:'CANNABIS 2025',v:'29¢',d:false},{n:'FIFA BRAZIL',v:'22¢',d:true},
-  ];
-  document.getElementById('ticker').innerHTML=items.map(i=>`
-    <div class="tick-item">
-      <span class="tick-name">${i.n}</span>
-      <span class="tick-val">${i.v}</span>
-      <span class="${i.d?'tick-up':'tick-down'}">${i.d?'▲':'▼'}</span>
-    </div>`).join('');
-}
-
-function sigClass(s){return s==='buy'?'sig-buy':s==='watch'?'sig-watch':'sig-pass';}
-function sigLabel(s){return s==='buy'?'BUY':s==='watch'?'WATCH':'PASS';}
-
-function renderMarkets(){
-  let show=MARKETS;
-  if(filter==='arb') show=show.filter(m=>m.arb);
-  else if(filter!=='all') show=show.filter(m=>m.cat===filter);
-  document.getElementById('market-list').innerHTML=show.map(m=>{
-    const tSign=m.trend>=0?'+':'';
-    const tCls=m.trend>0?'trend-up':m.trend<0?'trend-dn':'trend-val';
-    const plCls=m.platform==='Kalshi'?'plat-k':'plat-p';
-    const plLabel=m.platform==='Kalshi'?'KALSHI':'POLY';
-    return `<div class="mcard${selectedId===m.id?' selected':''}" onclick="selectMarket(${m.id})">
-      <div class="mcard-top">
-        <div class="mcard-title">${m.title}</div>
-        <div class="mcard-actions">
-          <button class="signal-btn ${sigClass(m.signal)}" onclick="event.stopPropagation();selectMarket(${m.id})">${sigLabel(m.signal)}</button>
-          <span class="plat-badge ${plCls}">${plLabel}</span>
+  <!-- SETTINGS -->
+  <div id="tab-settings" class="panel">
+    <div class="sec" style="margin-top:0">API connections</div>
+    <div class="abox">
+      <div class="settings-grid">
+        <div class="set-row">
+          <div class="set-lbl">POLYMARKET — Gamma API (public, no key needed)</div>
+          <div class="inp" style="color:var(--green);font-size:11px">https://gamma-api.polymarket.com ✓ Connected</div>
+        </div>
+        <div class="set-row" style="margin-top:10px">
+          <div class="set-lbl">KALSHI — API Key</div>
+          <div style="display:flex;gap:7px;">
+            <input class="inp" id="kalshi-key" placeholder="Enter your Kalshi API key..." type="password">
+            <button class="btn btn-g" onclick="saveKalshiKey()">SAVE</button>
+          </div>
+          <div class="set-lbl" style="margin-top:5px;line-height:1.6">Get your key at <a href="https://kalshi.com/account/api" style="color:var(--blue)">kalshi.com/account/api</a></div>
+        </div>
+        <div class="set-row" style="margin-top:10px">
+          <div class="set-lbl">ANTHROPIC — API Key (powers AI advisor)</div>
+          <div style="display:flex;gap:7px;">
+            <input class="inp" id="anthropic-key" placeholder="sk-ant-..." type="password">
+            <button class="btn btn-g" onclick="saveAnthropicKey()">SAVE</button>
+          </div>
+        </div>
+        <div class="set-row" style="margin-top:10px">
+          <div class="set-lbl">CORS PROXY URL (optional — needed for live Kalshi data in browser)</div>
+          <div style="display:flex;gap:7px;">
+            <input class="inp" id="proxy-url" placeholder="https://your-worker.workers.dev">
+            <button class="btn btn-g" onclick="saveProxy()">SAVE</button>
+          </div>
+        </div>
+        <div class="set-row" style="margin-top:10px">
+          <div class="set-lbl">Refresh interval</div>
+          <select class="inp" id="refresh-int" onchange="setRefresh()" style="max-width:180px">
+            <option value="30000">Every 30 seconds</option>
+            <option value="60000" selected>Every 1 minute</option>
+            <option value="300000">Every 5 minutes</option>
+          </select>
         </div>
       </div>
-      <div class="odds-row">
-        <div class="odds-stat"><div class="odds-label">YES</div><div class="odds-val yes-val">${m.yes}¢</div></div>
-        <div class="odds-stat"><div class="odds-label">NO</div><div class="odds-val no-val">${m.no}¢</div></div>
-        <div class="odds-stat"><div class="odds-label">7D</div><div class="odds-val ${tCls}">${tSign}${m.trend}%</div></div>
-        <div class="bar-wrap"><div class="bar-fill" style="width:${m.yes}%"></div></div>
-      </div>
-      <div class="mcard-foot">
-        <span class="exp-date">CLOSES ${m.expires}</span>
-        ${m.arb?'<span class="arb-tag">ARB AVAILABLE</span>':''}
-      </div>
-    </div>`;
-  }).join('');
-}
+    </div>
+  </div>
 
-const AI_BLURBS={
-  1:'Strong momentum — Fed expectations have shifted hawkish recently. At 38¢, the market implies a ~38% chance. Macro data suggests this is slightly overpriced; consider NO.',
-  2:'Low-information speculative market. Brazil and France lead futures odds. 22¢ YES is cheap lottery-ticket territory — tiny position only.',
-  3:'Significant upward trend (+14% in 7 days) suggests strong conviction. At 61¢, this is pricing in more than 50/50. Follow the signal but watch for reversal.',
-  4:'Contrarian buy. Despite political headwinds, three states have active legislation. 29¢ feels underpriced — asymmetric upside if any state passes.',
-  5:'Market is near-certain (78¢). Limited upside on YES. Better to avoid or play NO for a small edge if you think they miss the cut.',
-  6:'Speculative but interesting. 12¢ is cheap lottery-ticket territory given increasing media fractures. Very low volume — only put in what you\'d be comfortable losing. Could be 5x if political dynamics shift.',
-  7:'Same event trading at 68¢ on Kalshi and 71¢ on Polymarket — 3¢ arb spread. Buy YES on Kalshi, hedge on Polymarket for near risk-free profit net of fees.',
-};
-
-function selectMarket(id){
-  selectedId=id;
-  renderMarkets();
-  const m=MARKETS.find(x=>x.id===id);
-  if(!m) return;
-  const panel=document.getElementById('signal-panel');
-  panel.classList.remove('panel-hidden');
-  document.getElementById('sig-title').textContent=m.title;
-  const vol=Math.floor(Math.random()*900+50)+'K';
-  const liq=m.yes<20||m.yes>80?'Low':m.yes>40&&m.yes<60?'High':'Medium';
-  const style=m.expires.includes('2026')?'Long-term':'Short-term';
-  const tSign=m.trend>=0?'+':'';
-  const tColor=m.trend>0?'green':m.trend<0?'red':'';
-  document.getElementById('sig-stats').innerHTML=`
-    <div class="stat-box"><div class="stat-label">YES PRICE</div><div class="stat-val green">${m.yes}¢</div></div>
-    <div class="stat-box"><div class="stat-label">VOLUME</div><div class="stat-val">$${vol}</div></div>
-    <div class="stat-box"><div class="stat-label">LIQUIDITY</div><div class="stat-val">${liq}</div></div>
-    <div class="stat-box"><div class="stat-label">CLOSES</div><div class="stat-val" style="font-size:13px">${m.expires}</div></div>
-    <div class="stat-box"><div class="stat-label">7D TREND</div><div class="stat-val ${tColor}">${tSign}${m.trend}%</div></div>
-    <div class="stat-box"><div class="stat-label">STYLE</div><div class="stat-val" style="font-size:13px">${style}</div></div>`;
-  document.getElementById('sig-ai').textContent=AI_BLURBS[id]||'Click Run Analysis in the AI Advisor tab for a full breakdown of this market.';
-  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
-}
-
-function setFilter(btn,f){
-  document.querySelectorAll('.f-btn').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-  filter=f;
-  selectedId=null;
-  document.getElementById('signal-panel').classList.add('panel-hidden');
-  renderMarkets();
-}
-
-function switchNav(btn,pane){
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  ['markets','advisor','watchlist'].forEach(p=>{
-    document.getElementById('pane-'+p).classList.toggle('panel-hidden',p!==pane);
-  });
-  if(pane==='watchlist') renderWatchlist();
-  if(pane==='advisor') renderAdvisorRecs();
-}
-
-function renderAdvisorRecs(){
-  const recs=[
-    {title:'Fed rate cut Jun 2025',action:'BUY NO',conf:'strong',reason:'Macro data shifted hawkish; 38¢ YES is overpriced at current odds.'},
-    {title:'S&P 500 above 6000',action:'ARB',conf:'strong',reason:'3¢ spread between Kalshi (68¢) and Polymarket (71¢) — buy both sides.'},
-    {title:'Trump pardon Ulbricht',action:'HOLD',conf:'moderate',reason:'+14% 7D trend is notable but momentum may be slowing near 60¢.'},
-    {title:'Cannabis legalization 2025',action:'BUY YES',conf:'moderate',reason:'Three active state bills. 29¢ underprices real probability.'},
-  ];
-  document.getElementById('advisor-recs').innerHTML=recs.map(r=>{
-    const ac=r.action==='BUY YES'||r.action==='ARB'?'sig-buy':r.action==='BUY NO'?'sig-watch':'sig-pass';
-    const cc=r.conf==='strong'?'green':r.conf==='moderate'?'amber':'';
-    return `<div class="mcard" style="margin-bottom:8px">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:6px">
-        <div style="font-size:13px;color:var(--text)">${r.title}</div>
-        <button class="signal-btn ${ac}" style="flex-shrink:0">${r.action}</button>
-      </div>
-      <div style="font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:6px">${r.reason}</div>
-      <div style="font-size:10px;color:var(--${cc||'text3'});letter-spacing:.06em;text-transform:uppercase">${r.conf} confidence</div>
-    </div>`;
-  }).join('');
-}
-
-function askAdvisor(){
-  const q=document.getElementById('ask-input').value.trim();
-  if(!q) return;
-  const out=document.getElementById('advisor-out');
-  out.innerHTML='<span class="spinner"></span>Analyzing…';
-  setTimeout(()=>{
-    out.textContent='[AI advisor requires an Anthropic API key — configure in the full app via Settings. This preview shows the interface only.]';
-  },1200);
-}
-
-function renderWatchlist(){
-  const wm=MARKETS.filter(m=>WATCHLIST.includes(m.id));
-  if(!wm.length){document.getElementById('watchlist-body').innerHTML='<div style="color:var(--text3);font-size:12px;padding:1rem 0">No markets in watchlist. Click a market card to analyze it.</div>';return;}
-  document.getElementById('watchlist-body').innerHTML=`<div style="font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">Saved markets</div>`+wm.map(m=>{
-    const tSign=m.trend>=0?'+':'';
-    const tCls=m.trend>0?'trend-up':m.trend<0?'trend-dn':'trend-val';
-    return `<div class="mcard" onclick="switchNav(document.querySelectorAll('.nav-btn')[0],'markets');selectMarket(${m.id})">
-      <div class="mcard-top"><div class="mcard-title">${m.title}</div>
-      <div class="mcard-actions"><button class="signal-btn ${sigClass(m.signal)}">${sigLabel(m.signal)}</button></div></div>
-      <div class="odds-row">
-        <div class="odds-stat"><div class="odds-label">YES</div><div class="odds-val yes-val">${m.yes}¢</div></div>
-        <div class="odds-stat"><div class="odds-label">7D</div><div class="odds-val ${tCls}">${tSign}${m.trend}%</div></div>
-        <div class="bar-wrap"><div class="bar-fill" style="width:${m.yes}%"></div></div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-renderTicker();
-renderMarkets();
-</script>
+</div>
+</div>
+<div class="notif" id="notif"></div>
+<script src="app.js"></script>
+</body>
+</html>
